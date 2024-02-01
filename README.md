@@ -8,4 +8,12 @@ https://github.com/WUY97/GAMES101/assets/44213937/035ededb-fa7d-439c-abc2-9183f6
 
 ## HW2
 
-![Screenshot](./hw2/Screenshot%202024-01-31%20at%209.15.49 PM.png)
+![output](./hw2/output.png)
+
+## HW3
+
+![normal](./hw3/normal.png)
+![phong](./hw3/phong.png)
+![texture](./hw3/texture.png)
+![bump](./hw3/bump.png)
+![displacement](./hw3/displacement.png)
