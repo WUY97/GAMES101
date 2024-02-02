@@ -21,3 +21,7 @@ https://github.com/WUY97/GAMES101/assets/44213937/035ededb-fa7d-439c-abc2-9183f6
 ## HW4
 
 ![output](./hw4/output.png)
+
+## HW5
+
+![output](./hw5/binary.png)
