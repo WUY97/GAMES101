@@ -33,3 +33,7 @@ https://github.com/WUY97/GAMES101/assets/44213937/035ededb-fa7d-439c-abc2-9183f6
 ## HW7
 
 ![spp16](./hw7/spp16.png)
+
+## HW8
+
+![output](./hw8/output.jpg)
