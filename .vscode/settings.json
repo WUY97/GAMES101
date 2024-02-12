@@ -17,6 +17,8 @@
         "etai",
         "etat",
         "framebuffer",
+        "fshader",
+        "glsl",
         "goksu",
         "Göksu",
         "Güvendiren",
@@ -52,6 +54,7 @@
         "vertice",
         "verts",
         "viewspace",
+        "vshader",
         "Whitted"
     ],
     "files.associations": {

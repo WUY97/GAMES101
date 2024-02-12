@@ -1,9 +1,11 @@
+import Demo1 from '../components/Views/Demo1';
+import Demo2 from '../components/Views/Demo2';
+import Demo3 from '../components/Views/Demo3';
+
 const dirs = {
-  'glsl-shaders-1': 'GLSL-SHADERS-1',
-  'glsl-shaders-2': 'GLSL-SHADERS-2',
-  'glsl-shaders-3': 'GLSL-SHADERS-3',
-  'glsl-shaders-4': 'GLSL-SHADERS-4',
-  'glsl-shaders-5': 'GLSL-SHADERS-5'
+  'First Shader': Demo1,
+  'Changing Color using Mouse': Demo2,
+  'Changing Color with Time': Demo3
 };
 
 export default dirs;

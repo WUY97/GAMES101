@@ -18,7 +18,7 @@ export default function NavBar() {
       {Object.keys(dirs).map((dir) => (
         <sp-sidenav-item
           value={dir}
-          label={dirs[dir]}
+          label={dir}
           key={dir}
           onClick={() => handleClick(dir)}
           {...(page === dir ? { selected: true } : {})}></sp-sidenav-item>

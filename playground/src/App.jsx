@@ -1,5 +1,5 @@
 import NavBar from './components/NavBar';
-import View from './components/View';
+import View from './components/Views/View';
 
 import '@spectrum-web-components/split-view/sp-split-view.js';
 
