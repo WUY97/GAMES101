@@ -1,6 +1,6 @@
-import { useStore } from '../../store/Store';
+import { useStore } from '../store/Store';
 
-import dirs from '../../store/dirs';
+import dirs from '../store/dirs';
 import S from './View.module.css';
 
 export default function View() {

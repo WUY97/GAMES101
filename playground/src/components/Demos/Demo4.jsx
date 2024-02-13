@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-function Demo2() {
+function Demo4() {
   const mountRef = useRef(null);
 
   useEffect(() => {
@@ -14,18 +14,20 @@ function Demo2() {
     `;
 
     const fshader = /*glsl*/ `
-      uniform vec3 u_color;
-      uniform vec2 u_mouse;
       uniform vec2 u_resolution;
-      uniform float u_time;
 
-      void main (void)
-      {
-        vec3 color = vec3(u_mouse.x/u_resolution.x, 0.0, u_mouse.y/u_resolution.y);
-        //color = vec3((sin(u_time)+1.0)/2.0, 0.0, (cos(u_time)+1.0)/2.0);
+      vec3 hsb2rgb(vec3 c) {
+        vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0), 6.0)-3.0)-1.0, 0.0, 1.0 );
+        rgb = rgb*rgb*(3.0-2.0*rgb);
+        return c.z * mix(vec3(1.0), rgb, c.y);
+      }
+
+      void main (void) {
+        vec2 uv = gl_FragCoord.xy/u_resolution;
+        vec3 color = hsb2rgb(vec3(uv.x,1.0,uv.y));
         gl_FragColor = vec4(color, 1.0); 
       }
-      `;
+    `;
 
     let resizeObserver;
     if (ResizeObserver) {
@@ -49,16 +51,12 @@ function Demo2() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current.appendChild(renderer.domElement);
 
-    const clock = new THREE.Clock();
+    const geometry = new THREE.PlaneGeometry(2, 2);
 
     const uniforms = {
-      u_color: { value: new THREE.Color(0xff0000) },
-      u_time: { value: 0.0 },
-      u_mouse: { value: { x: 0.0, y: 0.0 } },
       u_resolution: { value: { x: 0, y: 0 } }
     };
 
-    const geometry = new THREE.PlaneGeometry(2, 2);
     const material = new THREE.ShaderMaterial({
       uniforms: uniforms,
       vertexShader: vshader,
@@ -70,20 +68,8 @@ function Demo2() {
 
     camera.position.z = 1;
 
-    if ('ontouchstart' in window) {
-      document.addEventListener('touchmove', move);
-    } else {
-      document.addEventListener('mousemove', move);
-    }
-
-    function move(evt) {
-      uniforms.u_mouse.value.x = evt.touches ? evt.touches[0].clientX : evt.clientX;
-      uniforms.u_mouse.value.y = evt.touches ? evt.touches[0].clientY : evt.clientY;
-    }
-
     function animate() {
       requestAnimationFrame(animate);
-      uniforms.u_time.value += clock.getDelta();
       renderer.render(scene, camera);
     }
     animate();
@@ -101,4 +87,4 @@ function Demo2() {
   return <div ref={mountRef} style={{ width: '100%', height: '100%' }}></div>;
 }
 
-export default Demo2;
+export default Demo4;
