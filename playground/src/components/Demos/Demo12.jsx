@@ -1,16 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-function Demo10() {
+function Demo12() {
   const mountRef = useRef(null);
 
   useEffect(() => {
     const currMountRef = mountRef.current;
 
     const vshader = /*glsl*/ `
+      varying vec2 vUv;
       varying vec3 vPosition;
 
-      void main() {	
+      void main() {
+        vUv = uv;
         vPosition = position;
         gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
       }
@@ -21,34 +23,32 @@ function Demo10() {
       uniform float u_time;
       uniform vec3 u_color;
       
+      varying vec2 vUv;
       varying vec3 vPosition;
       
-      float rect(vec2 pt, vec2 anchor, vec2 size, vec2 center){
-        vec2 halfsize = size * 0.5;
+      float circle(vec2 pt, vec2 center, float radius, float edge_thickness){
         vec2 p = pt - center;
-        float horz = step(-halfsize.x - anchor.x, p.x) - step(halfsize.x - anchor.x, p.x);
-        float vert = step(-halfsize.y - anchor.y, p.y) - step(halfsize.y - anchor.y, p.y);
-        return horz * vert;
+        float len = length(p);
+        float result = 1.0-smoothstep(radius-edge_thickness, radius, len);
+      
+        return result;
       }
 
-      mat2 getRotationMatrix(float theta){
-        float s = sin(theta);
-        float c = cos(theta);
-        return mat2(c, -s, s, c);
-      }
-      mat2 getScaleMatrix(float scale){
-        return mat2(scale, 0, 0, scale);
+      float circle2(vec2 pt, vec2 center, float radius, float line_width, float edge_thickness){
+        vec2 p = pt - center;
+        float len = length(p);
+        float half_line_width = line_width/2.0;
+        float result = smoothstep(radius-half_line_width-edge_thickness, radius-half_line_width, len) - smoothstep(radius + half_line_width, radius + half_line_width + edge_thickness, len);
+      
+        return result;
       }
       
       void main (void) {
         vec2 adjustedCoords = vPosition.xy * u_resolution / min(u_resolution.x, u_resolution.y);
-        vec2 center = vec2(0.1, 0.3);
-        mat2 matr = getRotationMatrix(u_time);
-        mat2 mats = getScaleMatrix((sin(u_time)+1.0)/3.0 + 0.5);
-        vec2 pt = adjustedCoords - center;
-        pt = mats * matr * pt;
-        pt += center;
-        vec3 color = u_color * rect(pt, vec2(0.0), vec2(0.3), center);
+        float circle1 = circle(adjustedCoords, vec2(0.3), 0.2, 0.002);
+        float circle2 = circle2(adjustedCoords, vec2(0.0), 0.5, 0.01, 0.002);
+        float combinedCircles = max(circle1, circle2);
+        vec3 color = u_color * combinedCircles;
         gl_FragColor = vec4(color, 1.0); 
       }
     `;
@@ -116,4 +116,4 @@ function Demo10() {
   return <div ref={mountRef} style={{ width: '100%', height: '100%' }}></div>;
 }
 
-export default Demo10;
+export default Demo12;

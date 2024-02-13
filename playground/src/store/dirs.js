@@ -8,6 +8,8 @@ import Demo7 from '../components/Demos/Demo7';
 import Demo8 from '../components/Demos/Demo8';
 import Demo9 from '../components/Demos/Demo9';
 import Demo10 from '../components/Demos/Demo10';
+import Demo11 from '../components/Demos/Demo11';
+import Demo12 from '../components/Demos/Demo12';
 
 const dirs = {
   'First Shader': Demo1,
@@ -19,7 +21,9 @@ const dirs = {
   'Using Smoothstep': Demo7,
   'Moving Square': Demo8,
   'Rotating Square': Demo9,
-  'Scaling Square': Demo10
+  'Scaling Square': Demo10,
+  'Scaling Square Tile': Demo11,
+  'Two Circles': Demo12
 };
 
 export default dirs;

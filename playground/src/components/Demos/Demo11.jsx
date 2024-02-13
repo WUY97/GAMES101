@@ -1,16 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-function Demo10() {
+function Demo11() {
   const mountRef = useRef(null);
 
   useEffect(() => {
     const currMountRef = mountRef.current;
 
     const vshader = /*glsl*/ `
+      varying vec2 vUv;
       varying vec3 vPosition;
 
-      void main() {	
+      void main() {
+        vUv = uv;
         vPosition = position;
         gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
       }
@@ -21,6 +23,7 @@ function Demo10() {
       uniform float u_time;
       uniform vec3 u_color;
       
+      varying vec2 vUv;
       varying vec3 vPosition;
       
       float rect(vec2 pt, vec2 anchor, vec2 size, vec2 center){
@@ -41,11 +44,12 @@ function Demo10() {
       }
       
       void main (void) {
-        vec2 adjustedCoords = vPosition.xy * u_resolution / min(u_resolution.x, u_resolution.y);
-        vec2 center = vec2(0.1, 0.3);
+        float tilecount = 6.0;
+        vec2 adjustedCoords = vUv.xy * u_resolution / min(u_resolution.x, u_resolution.y);
+        vec2 center = vec2(0.5);
         mat2 matr = getRotationMatrix(u_time);
         mat2 mats = getScaleMatrix((sin(u_time)+1.0)/3.0 + 0.5);
-        vec2 pt = adjustedCoords - center;
+        vec2 pt = fract(adjustedCoords*tilecount) - center;
         pt = mats * matr * pt;
         pt += center;
         vec3 color = u_color * rect(pt, vec2(0.0), vec2(0.3), center);
@@ -116,4 +120,4 @@ function Demo10() {
   return <div ref={mountRef} style={{ width: '100%', height: '100%' }}></div>;
 }
 
-export default Demo10;
+export default Demo11;
