@@ -10,6 +10,9 @@ import Demo9 from '../components/Demos/Demo9';
 import Demo10 from '../components/Demos/Demo10';
 import Demo11 from '../components/Demos/Demo11';
 import Demo12 from '../components/Demos/Demo12';
+import Demo13 from '../components/Demos/Demo13';
+import Demo14 from '../components/Demos/Demo14';
+import Demo15 from '../components/Demos/Demo15';
 
 const dirs = {
   'First Shader': Demo1,
@@ -23,7 +26,10 @@ const dirs = {
   'Rotating Square': Demo9,
   'Scaling Square': Demo10,
   'Scaling Square Tile': Demo11,
-  'Two Circles': Demo12
+  'Two Circles': Demo12,
+  'Diagonal Line': Demo13,
+  'Sin Wave': Demo14,
+  'Concentric Circles': Demo15
 };
 
 export default dirs;
