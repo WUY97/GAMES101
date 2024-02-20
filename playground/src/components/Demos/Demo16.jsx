@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-function Demo15() {
+function Demo16() {
   const mountRef = useRef(null);
 
   useEffect(() => {
@@ -39,22 +39,19 @@ function Demo15() {
         point.x = fract(point.x + 0.5);
       }
 
-      // Calculate half of the mortar height for easier calculations
-      float half_mortar_height = mortar_height / 2.0;
-
       // Draw vertical lines of the bricks
-      float vertical_lines = smoothstep(-half_mortar_height - edge_thickness, -half_mortar_height, point.x) - smoothstep(half_mortar_height, half_mortar_height + edge_thickness, point.x) + smoothstep(1.0-half_mortar_height-edge_thickness, 1.0-half_mortar_height, point.x);
+      float vertical_lines = 1.0 - smoothstep(mortar_height/2.0, mortar_height/2.0 + edge_thickness, point.x) + smoothstep(1.0 - mortar_height/2.0 - edge_thickness, 1.0 - mortar_height/2.0, point.x);
 
       // Draw top and bottom lines of the bricks
-      float top_bottom_lines = smoothstep(-half_mortar_height - edge_thickness, -half_mortar_height, point.y) - smoothstep(half_mortar_height, half_mortar_height + edge_thickness, point.y);
+      float top_bottom_lines = 1.0 - smoothstep(mortar_height/2.0, mortar_height/2.0 + edge_thickness, point.y) + smoothstep(1.0 - mortar_height/2.0 - edge_thickness, 1.0 - mortar_height/2.0, point.y);
 
       // Draw the middle line of the bricks for the mortar
-      float middle_line = smoothstep(0.5 - half_mortar_height - edge_thickness, 0.5 - half_mortar_height, point.y) - smoothstep(0.5 + half_mortar_height, 0.5 + half_mortar_height + edge_thickness, point.y);
+      float middle_line = smoothstep(0.5 - mortar_height/2.0 - edge_thickness, 0.5 - mortar_height/2.0, point.y) - smoothstep(0.5 + mortar_height/2.0, 0.5 + mortar_height/2.0 + edge_thickness, point.y);
 
       // Combine the results for vertical, top-bottom, and middle lines
       float result = vertical_lines + top_bottom_lines + middle_line;
 
-      return result;
+      return clamp(result, 0.0, 1.0);
     }
 
     void main (void) {
@@ -136,4 +133,4 @@ function Demo15() {
   return <div ref={mountRef} style={{ width: '100%', height: '100%' }}></div>;
 }
 
-export default Demo15;
+export default Demo16;
