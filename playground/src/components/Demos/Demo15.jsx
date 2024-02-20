@@ -8,15 +8,19 @@ function Demo15() {
     const currMountRef = mountRef.current;
 
     const vshader = /*glsl*/ `
-      varying vec2 vUv;
-      varying vec3 vPosition;
+      // Varying variables to pass data to the fragment shader
+      varying vec2 vUv;        // Texture coordinates
+      varying vec3 vPosition;  // Vertex position
 
       void main() {
-        vUv = uv;
-        vPosition = position;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+          // Assign texture coordinates and position to varying variables
+          vUv = uv;
+          vPosition = position;
+
+          // Calculate the final position of the vertex
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
-      `;
+    `;
 
     const fshader = /*glsl*/ `
     #define PI2 6.28318530718
@@ -29,27 +33,85 @@ function Demo15() {
     varying vec3 vPosition;
 
 
-    float circle(vec2 pt, vec2 center, float radius, float line_width, float edge_thickness){
-      float len = distance(pt, center);
-      //Change true to false to soften the edge
-      float result = smoothstep(radius-line_width/2.0-edge_thickness, radius-line_width/2.0, len) - smoothstep(radius + line_width/2.0, radius + line_width/2.0 + edge_thickness, len);
+    float circle(vec2 point, vec2 center, float radius, float line_width, float edge_thickness){
+      // Calculate the distance from the point to the center of the circle
+      float distance_to_center = distance(point, center);
+
+      // Calculate the smooth transition for the inner edge of the ring
+      float inner_edge = smoothstep(radius - line_width / 2.0 - edge_thickness, radius - line_width / 2.0, distance_to_center);
+      
+      // Calculate the smooth transition for the outer edge of the ring
+      float outer_edge = smoothstep(radius + line_width / 2.0, radius + line_width / 2.0 + edge_thickness, distance_to_center);
+
+      // Combine the gradients of the inner and outer edges to get the final result
+      float result = inner_edge - outer_edge;
 
       return result;
     }
 
-    float line(float x, float y, float line_width, float edge_thickness){
-      return smoothstep(x-line_width/2.0-edge_thickness, x-line_width/2.0, y) - smoothstep(x+line_width/2.0, x+line_width/2.0+edge_thickness, y);
+    float sweep(vec2 point, vec2 center, float radius, float line_width, float edge_thickness){
+        // Calculate the vector from the point to the center
+        vec2 direction = point - center;
+
+        // Calculate the angle of the sweeping line based on time
+        float theta = fract(u_time / 4.0) * PI2;
+        vec2 line_direction = vec2(cos(theta), -sin(theta)) * radius;
+
+        // Calculate the projection length of the point on the line direction, clamped between 0.0 and 1.0
+        float projection = clamp(dot(direction, line_direction) / dot(line_direction, line_direction), 0.0, 1.0);
+
+        // Calculate the distance from the point to the sweeping line
+        float distance = length(direction - line_direction * projection);
+
+        // Initialize the gradient value
+        float gradient = 0.0;
+        const float gradient_angle = 1.0;
+
+        // If the point is inside the circle, calculate the gradient based on the angle difference
+        if (length(direction) < radius) {
+            float angle_difference = mod(theta + atan(direction.y, direction.x), PI2);
+            gradient = clamp(gradient_angle - angle_difference, 0.0, gradient_angle) * 0.5;
+        }
+
+        // Compute the final color value, combining line width and edge thickness for a smooth transition
+        return gradient + 1.0 - smoothstep(line_width, line_width + edge_thickness, distance);
     }
 
-    void main (void)
-    {
+    float line(float position_x, float position_y, float line_width, float edge_thickness) {
+      // Calculate the smooth transition for the left edge of the line
+      float left_edge = smoothstep(position_x - line_width / 2.0 - edge_thickness, position_x - line_width / 2.0, position_y);
+      
+      // Calculate the smooth transition for the right edge of the line
+      float right_edge = smoothstep(position_x + line_width / 2.0, position_x + line_width / 2.0 + edge_thickness, position_y);
+  
+      // Combine the gradients of the left and right edges to get the final result
+      float result = left_edge - right_edge;
+  
+      return result;
+    }
+
+    void main (void) {
+      // Define the color for the axes and circles
       vec3 axis_color = vec3(0.8);
+  
+      // Adjust coordinates based on the resolution to maintain aspect ratio
       vec2 adjustedCoords = vPosition.xy * u_resolution / min(u_resolution.x, u_resolution.y);
-      vec3 color = line(vUv.y, 0.5, 0.002, 0.001) * axis_color;//xAxis
-      color += line(vUv.x, 0.5, 0.002, 0.001) * axis_color;//yAxis
+  
+      // Initialize color with the horizontal line (x-axis) drawing
+      vec3 color = line(vUv.y, 0.5, 0.002, 0.001) * axis_color;
+  
+      // Add vertical line (y-axis) to the color
+      color += line(vUv.x, 0.5, 0.002, 0.001) * axis_color;
+  
+      // Add three circles with different radii to the color
       color += circle(adjustedCoords, vec2(0.0), 0.8, 0.005, 0.002) * axis_color;
       color += circle(adjustedCoords, vec2(0.0), 0.4, 0.005, 0.002) * axis_color;
       color += circle(adjustedCoords, vec2(0.0), 0.2, 0.005, 0.002) * axis_color;
+  
+      // Add a sweeping effect with a different color
+      color += sweep(adjustedCoords, vec2(0), 0.8, 0.003, 0.001) * vec3(0.1, 0.3, 1.0);
+  
+      // Set the final fragment color
       gl_FragColor = vec4(color, 1.0); 
     }
     `;
@@ -62,6 +124,8 @@ function Demo15() {
     mountRef.current.appendChild(renderer.domElement);
 
     const geometry = new THREE.PlaneGeometry(2, 2);
+
+    const clock = new THREE.Clock();
 
     const uniforms = {
       u_color: { value: new THREE.Color(0xff0000) },
@@ -83,6 +147,7 @@ function Demo15() {
 
     function animate() {
       requestAnimationFrame(animate);
+      uniforms.u_time.value += clock.getDelta();
       renderer.render(scene, camera);
     }
     animate();

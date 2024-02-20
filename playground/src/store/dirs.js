@@ -29,7 +29,7 @@ const dirs = {
   'Two Circles': Demo12,
   'Diagonal Line': Demo13,
   'Sin Wave': Demo14,
-  'Concentric Circles': Demo15
+  'Concentric Circles with Sweep': Demo15
 };
 
 export default dirs;
