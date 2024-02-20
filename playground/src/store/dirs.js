@@ -14,6 +14,7 @@ import Demo13 from '../components/Demos/Demo13';
 import Demo14 from '../components/Demos/Demo14';
 import Demo15 from '../components/Demos/Demo15';
 import Demo16 from '../components/Demos/Demo16';
+import Demo17 from '../components/Demos/Demo17';
 
 const dirs = {
   'First Shader': Demo1,
@@ -31,7 +32,8 @@ const dirs = {
   'Diagonal Line': Demo13,
   'Sin Wave': Demo14,
   'Concentric Circles with Sweep': Demo15,
-  Bricks: Demo16
+  Bricks: Demo16,
+  'Random Noise': Demo17
 };
 
 export default dirs;
