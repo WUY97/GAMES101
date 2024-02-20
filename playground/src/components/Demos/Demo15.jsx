@@ -23,6 +23,7 @@ function Demo15() {
     `;
 
     const fshader = /*glsl*/ `
+    #define PI 3.141592653589
     #define PI2 6.28318530718
 
     uniform vec2 u_mouse;
@@ -90,6 +91,22 @@ function Demo15() {
       return result;
     }
 
+    float polygon(vec2 point, vec2 center, float radius, int sides, float rotation, float edge_thickness) {
+      // Translate the point relative to the polygon center
+      point -= center;
+  
+      // Calculate the angle from the current pixel to the center and adjust with rotation
+      float angle = atan(point.y, point.x) + rotation;
+      // Calculate the angle for each polygon side
+      float side_angle = PI2 / float(sides);
+  
+      // Shaping function to modulate the distance based on the polygon sides
+      float distance_modulation = cos(floor(0.5 + angle / side_angle) * side_angle - angle) * length(point);
+  
+      // Return the smoothstep value for creating the polygon edge
+      return 1.0 - smoothstep(radius, radius + edge_thickness, distance_modulation);
+    }
+
     void main (void) {
       // Define the color for the axes and circles
       vec3 axis_color = vec3(0.8);
@@ -110,6 +127,10 @@ function Demo15() {
   
       // Add a sweeping effect with a different color
       color += sweep(adjustedCoords, vec2(0), 0.8, 0.003, 0.001) * vec3(0.1, 0.3, 1.0);
+
+      // Add polygons
+      color += polygon(adjustedCoords, vec2(1.0 - sin(u_time*3.0)*0.05, 0), 0.05, 3, 0.0, 0.001) * vec3(1.0);
+      color += polygon(adjustedCoords, vec2(-1.0 - sin(u_time*3.0+PI)*0.05, 0), 0.05, 3, PI, 0.001) * vec3(1.0);
   
       // Set the final fragment color
       gl_FragColor = vec4(color, 1.0); 
