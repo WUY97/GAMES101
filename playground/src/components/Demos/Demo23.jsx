@@ -4,12 +4,12 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 function Demo23() {
   const mountRef = useRef(null);
+  const controlsRef = useRef();
 
   useEffect(() => {
     const mount = mountRef.current;
     const uniforms = {};
     uniforms.u_time = { value: 0.0 };
-    uniforms.u_mouse = { value: { x: 0.0, y: 0.0 } };
     uniforms.u_resolution = { value: { x: 0, y: 0 } };
     uniforms.u_radius = { value: 20.0 };
 
@@ -35,7 +35,7 @@ function Demo23() {
     scene.add(cube);
 
     // OrbitControls
-    const controls = new OrbitControls(camera, renderer.domElement);
+    controlsRef.current = new OrbitControls(camera, renderer.domElement);
 
     // Animation loop
     const clock = new THREE.Clock();
@@ -58,13 +58,6 @@ function Demo23() {
       }
     });
     resizeObserver.observe(mount);
-
-    // Event handler for mouse move
-    const move = (event) => {
-      // const uniforms = uniformsRef.current;
-      uniforms.u_mouse.value.x = event.touches ? event.touches[0].clientX : event.clientX;
-      uniforms.u_mouse.value.y = event.touches ? event.touches[0].clientY : event.clientY;
-    };
 
     // Cleanup
     return () => {
