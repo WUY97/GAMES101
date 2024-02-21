@@ -18,6 +18,9 @@ import Demo17 from '../components/Demos/Demo17';
 import Demo18 from '../components/Demos/Demo18';
 import Demo19 from '../components/Demos/Demo19';
 import Demo20 from '../components/Demos/Demo20';
+import Demo21 from '../components/Demos/Demo21';
+import Demo22 from '../components/Demos/Demo22';
+import Demo23 from '../components/Demos/Demo23';
 
 const dirs = {
   'First Shader': Demo1,
@@ -39,7 +42,10 @@ const dirs = {
   'Random Noise': Demo17,
   'Random 2D': Demo18,
   'Texture Sampler': Demo19,
-  Flame: Demo20
+  Flame: Demo20,
+  'Rotating Image': Demo21,
+  'Ripple Effect': Demo22,
+  Morphing: Demo23
 };
 
 export default dirs;
