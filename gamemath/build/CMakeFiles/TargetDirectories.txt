@@ -1,0 +1,3 @@
+/Users/yitong/Projects/GAMES101/gamemath/build/CMakeFiles/Math.dir
+/Users/yitong/Projects/GAMES101/gamemath/build/CMakeFiles/edit_cache.dir
+/Users/yitong/Projects/GAMES101/gamemath/build/CMakeFiles/rebuild_cache.dir
